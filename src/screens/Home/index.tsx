@@ -1,9 +1,10 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ErrorContent from '../../components/ErrorContent';
 import Loading from '../../components/Loading';
-import MovieListItem from '../../components/MovieListItem';
+import MoviesList from '../../components/MoviesList';
+import SearchBar from '../../components/SearchBar';
 import { RootStackParamList } from '../../router/Router';
 import { getMovies, Movie } from '../../service';
 import { colors } from '../../style';
@@ -15,12 +16,14 @@ type Props = {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.bodyBackgroundColor,
+    height: '100%',
   },
 });
 
 const Home = ({ navigation }: Props) => {
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [searchParams, setSearchParams] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -40,18 +43,16 @@ const Home = ({ navigation }: Props) => {
   }
 
   return (
-    <FlatList
-      style={styles.container}
-      numColumns={2}
-      data={movies}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => (
-        <MovieListItem
-          movie={item}
-          onPress={() => navigation.push('MovieDetail', { movie: item })}
-        />
-      )}
-    />
+    <View style={styles.container}>
+      <SearchBar handleSearchParamsChange={setSearchParams} />
+      <MoviesList
+        filterOptions={{ searchParams }}
+        movies={movies}
+        handleItemPress={(item: Movie) =>
+          navigation.push('MovieDetail', { movie: item })
+        }
+      />
+    </View>
   );
 };
 
