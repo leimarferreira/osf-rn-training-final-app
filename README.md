@@ -92,7 +92,7 @@ Conteúdo do email: `link do projeto no github`
 
 ### 2. Implementar as sessões disponíveis para um determinado filme
 
-- [ ] Concluído Total
+- [x] Concluído Total
 - [ ] Concluído Parcial
 - [ ] Não Concluído
 

@@ -36,7 +36,8 @@ const TrailerButton = ({ trailerURL }: Props) => {
   return (
     <TouchableOpacity
       style={styles.touchableContainer}
-      onPress={() => Linking.openURL(trailerURL)}>
+      onPress={() => Linking.openURL(trailerURL)}
+    >
       <View style={styles.container}>
         <Icon name="play" size={30} color="#000" />
         <Text style={styles.text}>Assistir o trailer</Text>

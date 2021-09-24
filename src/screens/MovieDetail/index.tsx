@@ -1,9 +1,16 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  NativeSegmentedControlIOSChangeEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import PosterLandscape from '../../components/PosterLandscape';
 import PosterPortrait from '../../components/PosterPortrait';
+import MovieTheaterList from '../../components/MovieTheaterList';
 import TrailerButton from '../../components/TrailerButton';
 import { RootStackParamList } from '../../router/Router';
 import { colors } from '../../style';
@@ -51,6 +58,51 @@ const styles = StyleSheet.create({
 
 const MovieDetail = ({ route }: Props) => {
   const { movie } = route.params;
+
+  const week = useMemo(
+    () => [
+      'Domingo',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
+      'Sábado',
+    ],
+    [],
+  );
+
+  // Index of the selected value in the SegmentedControl
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [days, setDays] = useState<string[]>(week);
+  const [date, setDate] = useState(
+    new Date().toISOString().replace(/T.*/g, ''),
+  );
+
+  // Set the values for the SegmentedControl
+  useEffect(() => {
+    let today = new Date().getDay();
+
+    if (today + 4 > week.length) {
+      setDays(week.slice(today).concat(week.slice(0, today + 4 - week.length)));
+    } else {
+      setDays(week.slice(today, today + 4));
+    }
+  }, [week]);
+
+  useEffect(() => {
+    // Set the date when another tab is selected in the SegmentedControl
+    let selectedDate = new Date();
+    selectedDate.setDate(selectedDate.getDate() + selectedIndex);
+    setDate(selectedDate.toISOString().replace(/T.*/g, ''));
+  }, [selectedIndex]);
+
+  const handleSegmentedControlChange = (
+    event: NativeSyntheticEvent<NativeSegmentedControlIOSChangeEvent>,
+  ) => {
+    setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+  };
+
   const renderTrailerButton = () => {
     if (movie.trailers.length) {
       return <TrailerButton trailerURL={movie.trailers[0].url} />;
@@ -83,8 +135,12 @@ const MovieDetail = ({ route }: Props) => {
 
         <SegmentedControl
           style={styles.segmentedControl}
-          values={['Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']}
+          values={days}
+          selectedIndex={selectedIndex}
+          onChange={handleSegmentedControlChange}
         />
+
+        <MovieTheaterList movie={movie} date={date} />
       </View>
     </View>
   );

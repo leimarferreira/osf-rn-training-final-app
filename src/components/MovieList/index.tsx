@@ -14,7 +14,7 @@ type Props = {
   filterOptions: FilterOptions;
 };
 
-const MoviesList = ({ movies, handleItemPress, filterOptions }: Props) => {
+const MovieList = ({ movies, handleItemPress, filterOptions }: Props) => {
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>(movies);
 
   useEffect(() => {
@@ -46,4 +46,4 @@ const MoviesList = ({ movies, handleItemPress, filterOptions }: Props) => {
   );
 };
 
-export default MoviesList;
+export default MovieList;

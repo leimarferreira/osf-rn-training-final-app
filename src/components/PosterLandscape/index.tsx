@@ -21,7 +21,8 @@ const PosterLandscape = ({ imageURL, children }: Props) => {
     <ImageBackground
       style={style.imageBackground}
       source={imageSource}
-      blurRadius={30}>
+      blurRadius={30}
+    >
       {children}
     </ImageBackground>
   );

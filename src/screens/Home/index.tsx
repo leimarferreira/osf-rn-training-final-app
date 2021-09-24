@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import ErrorContent from '../../components/ErrorContent';
 import Loading from '../../components/Loading';
-import MoviesList from '../../components/MoviesList';
+import MovieList from '../../components/MovieList';
 import SearchBar from '../../components/SearchBar';
 import { RootStackParamList } from '../../router/Router';
 import { getMovies, Movie } from '../../service';
@@ -45,7 +45,7 @@ const Home = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <SearchBar handleSearchParamsChange={setSearchParams} />
-      <MoviesList
+      <MovieList
         filterOptions={{ searchParams }}
         movies={movies}
         handleItemPress={(item: Movie) =>
