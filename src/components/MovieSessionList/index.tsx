@@ -10,6 +10,9 @@ type Props = {
 const MovieSessionList = ({ sessions }: Props) => {
   return (
     <FlatList
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={5}
+      updateCellsBatchingPeriod={10}
       data={sessions}
       keyExtractor={session => session.id}
       renderItem={({ item: session }) => {
@@ -17,6 +20,9 @@ const MovieSessionList = ({ sessions }: Props) => {
           <View style={styles.sessionDetails}>
             <Text style={styles.sessionTime}>{session.time}</Text>
             <FlatList
+              removeClippedSubviews={true}
+              maxToRenderPerBatch={3}
+              updateCellsBatchingPeriod={10}
               horizontal
               data={session.types}
               keyExtractor={type => `${type.id}`}

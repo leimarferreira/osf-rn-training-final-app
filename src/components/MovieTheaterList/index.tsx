@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { getMovieTheathers, Movie, MovieTheater } from '../../service';
+import { useQuery } from 'react-query';
+import { getMovieTheathers, Movie } from '../../service';
 import { colors } from '../../style';
 import ErrorContent from '../ErrorContent';
 import Loading from '../Loading';
@@ -12,28 +13,29 @@ type Props = {
 };
 
 const MovieTheaterList = ({ movie, date }: Props) => {
-  const [movieTheaters, setMovieTheaters] = useState<MovieTheater[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const {
+    isLoading,
+    isError,
+    data: movieTheaters,
+  } = useQuery([movie, date], async () => {
+    const response = await getMovieTheathers(movie, date);
+    return response.data;
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    getMovieTheathers(movie, date)
-      .then(response => setMovieTheaters(response.data))
-      .catch(err => setError(err))
-      .finally(() => setLoading(false));
-  }, [movie, date]);
-
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (error) {
+  if (isError) {
     return <ErrorContent message="Não há sessões disponíveis no momento" />;
   }
 
   return (
     <FlatList
+      initialNumToRender={5}
+      maxToRenderPerBatch={3}
+      removeClippedSubviews={true}
+      updateCellsBatchingPeriod={10}
       data={movieTheaters}
       keyExtractor={movieTheather => movieTheather.id}
       renderItem={({ item: movieTheather }) => {

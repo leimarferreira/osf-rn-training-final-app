@@ -1,13 +1,14 @@
-import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import Home from '../screens/Home';
 import MovieDetail from '../screens/MovieDetail';
-import { colors } from '../style';
 import { Movie } from '../service';
+import { colors } from '../style';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -30,15 +31,30 @@ const movieDetailOptions: NativeStackNavigationOptions = {
   headerTintColor: colors.white,
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 30 * 1000,
+      staleTime: 30 * 1000,
+      retry: false,
+      refetchOnMount: false,
+    },
+  },
+});
+
+setLogger({ log: console.log, warn: console.warn, error: () => {} });
+
 export default () => (
-  <NavigationContainer>
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={Home} options={homeOptions} />
-      <HomeStack.Screen
-        name="MovieDetail"
-        component={MovieDetail}
-        options={movieDetailOptions}
-      />
-    </HomeStack.Navigator>
-  </NavigationContainer>
+  <QueryClientProvider client={queryClient}>
+    <NavigationContainer>
+      <HomeStack.Navigator>
+        <HomeStack.Screen name="Home" component={Home} options={homeOptions} />
+        <HomeStack.Screen
+          name="MovieDetail"
+          component={MovieDetail}
+          options={movieDetailOptions}
+        />
+      </HomeStack.Navigator>
+    </NavigationContainer>
+  </QueryClientProvider>
 );

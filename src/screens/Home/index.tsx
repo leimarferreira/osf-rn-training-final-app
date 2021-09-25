@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
 import ErrorContent from '../../components/ErrorContent';
 import Loading from '../../components/Loading';
 import MovieList from '../../components/MovieList';
@@ -21,24 +22,22 @@ const styles = StyleSheet.create({
 });
 
 const Home = ({ navigation }: Props) => {
-  const [loading, setLoading] = useState(false);
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [searchParams, setSearchParams] = useState('');
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    setLoading(true);
-    getMovies()
-      .then(response => setMovies(response.data))
-      .catch(err => setError(err))
-      .finally(() => setLoading(false));
-  }, []);
+  const {
+    isLoading,
+    isError,
+    data: movies,
+  } = useQuery('movies', async () => {
+    const response = await getMovies();
+    return response.data;
+  });
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (error) {
+  if (isError) {
     return <ErrorContent message="Não há filmes disponíveis no momento" />;
   }
 
@@ -47,7 +46,7 @@ const Home = ({ navigation }: Props) => {
       <SearchBar handleSearchParamsChange={setSearchParams} />
       <MovieList
         filterOptions={{ searchParams }}
-        movies={movies}
+        movies={movies!}
         handleItemPress={(item: Movie) =>
           navigation.push('MovieDetail', { movie: item })
         }

@@ -102,7 +102,7 @@ Conteúdo do email: `link do projeto no github`
 
 ### 1. Implementar um sistema de cache de requisições
 
-- [ ] Concluído Total
+- [x] Concluído Total
 - [ ] Concluído Parcial
 - [ ] Não Concluído
 
