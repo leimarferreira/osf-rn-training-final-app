@@ -1,24 +1,24 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, SectionList, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from 'react-query';
-import { getMovieTheathers, Movie } from '../../service';
+import { City, getMovieTheathers, Movie } from '../../service';
 import { colors } from '../../style';
 import ErrorContent from '../ErrorContent';
 import Loading from '../Loading';
-import MovieSessionList from '../MovieSessionList';
 
 type Props = {
   movie: Movie;
   date: string;
+  city: City | null;
 };
 
-const MovieTheaterList = ({ movie, date }: Props) => {
+const MovieTheaterList = ({ movie, date, city }: Props) => {
   const {
     isLoading,
     isError,
     data: movieTheaters,
-  } = useQuery([movie, date], async () => {
-    const response = await getMovieTheathers(movie, date);
+  } = useQuery([movie, date, city], async () => {
+    const response = await getMovieTheathers(movie, city, date);
     return response.data;
   });
 
@@ -31,18 +31,30 @@ const MovieTheaterList = ({ movie, date }: Props) => {
   }
 
   return (
-    <FlatList
-      initialNumToRender={5}
-      maxToRenderPerBatch={3}
-      removeClippedSubviews={true}
-      updateCellsBatchingPeriod={10}
-      data={movieTheaters}
-      keyExtractor={movieTheather => movieTheather.id}
-      renderItem={({ item: movieTheather }) => {
+    <SectionList
+      removeClippedSubviews
+      updateCellsBatchingPeriod={5}
+      maxToRenderPerBatch={5}
+      sections={movieTheaters!}
+      keyExtractor={item => item.id}
+      renderSectionHeader={info => {
+        return <Text style={styles.movieTheaterName}>{info.section.name}</Text>;
+      }}
+      renderItem={({ item }) => {
         return (
-          <View>
-            <Text style={styles.movieTheaterName}>{movieTheather.name}</Text>
-            <MovieSessionList sessions={movieTheather.sessions} />
+          <View style={styles.sessionDetails}>
+            <Text style={styles.sessionTime}>{item.time}</Text>
+            <FlatList
+              horizontal
+              removeClippedSubviews
+              maxToRenderPerBatch={10}
+              updateCellsBatchingPeriod={5}
+              data={item.types}
+              keyExtractor={type => `${type.id}`}
+              renderItem={({ item: type }) => {
+                return <Text style={styles.smallBadge}>{type.alias}</Text>;
+              }}
+            />
           </View>
         );
       }}
@@ -55,6 +67,21 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  sessionDetails: {
+    flexDirection: 'row',
+  },
+  sessionTime: {
+    color: colors.white,
+    marginHorizontal: 8,
+  },
+  smallBadge: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    marginRight: 2,
+    marginVertical: 1,
+    color: colors.bodyBackgroundColor,
   },
 });
 

@@ -16,8 +16,14 @@ export interface Movie {
   trailers: Trailer[];
 }
 
-export const getMovies = () => {
-  return axios.get<Movie[]>(`${BASE_URL}/movies`);
+export const getMovies = (city: City | undefined | null) => {
+  let url: string;
+  if (city) {
+    url = `${BASE_URL}/movies/city/${city.cityId}`;
+  } else {
+    url = `${BASE_URL}/movies`;
+  }
+  return axios.get<Movie[]>(url);
 };
 
 interface SessionType {
@@ -45,7 +51,7 @@ interface RawMovieTheater {
 export interface MovieTheater {
   id: string;
   name: string;
-  sessions: MovieSession[];
+  data: MovieSession[];
 }
 
 /* Converts a RawMovieTheater array to a MovieTheater array,
@@ -76,7 +82,7 @@ const toMovieTheaterArray = (data: string): MovieTheater[] | string => {
       return {
         id: item.id,
         name: item.name,
-        sessions: sessions,
+        data: sessions,
       };
     });
   } catch {
@@ -84,11 +90,33 @@ const toMovieTheaterArray = (data: string): MovieTheater[] | string => {
   }
 };
 
-export const getMovieTheathers = (movie: Movie, date: string) => {
+export const getMovieTheathers = (
+  movie: Movie,
+  city: City | undefined | null,
+  date: string,
+) => {
+  let params = {};
+
+  if (city) {
+    params = {
+      cityId: city.cityId,
+    };
+  }
+
   return axios.get<MovieTheater[]>(
     `${BASE_URL}/movies/${movie.id}/sessions/date/${date}`,
     {
       transformResponse: toMovieTheaterArray,
+      params: params,
     },
   );
+};
+
+export interface City {
+  cityId: string;
+  cityName: string;
+}
+
+export const getCities = () => {
+  return axios.get<City[]>(`${BASE_URL}/cities`);
 };

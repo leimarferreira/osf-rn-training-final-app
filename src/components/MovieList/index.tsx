@@ -10,7 +10,7 @@ type FilterOptions = {
 
 type Props = {
   movies: Movie[];
-  handleItemPress: Function;
+  handleItemPress: (item: Movie) => void;
   filterOptions: FilterOptions;
 };
 
@@ -37,6 +37,8 @@ const MovieList = ({ movies, handleItemPress, filterOptions }: Props) => {
   return (
     <FlatList
       numColumns={2}
+      initialNumToRender={6}
+      removeClippedSubviews
       data={filteredMovies}
       keyExtractor={item => item.id}
       renderItem={({ item }) => (

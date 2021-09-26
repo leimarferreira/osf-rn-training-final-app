@@ -110,7 +110,7 @@ Conteúdo do email: `link do projeto no github`
 
 ### 2. Adicionar o pacote Lint-staged
 
-- [ ] Concluído Total
+- [x] Concluído Total
 - [ ] Concluído Parcial
 - [ ] Não Concluído
 
@@ -118,7 +118,7 @@ Conteúdo do email: `link do projeto no github`
 
 ### 3. Adicionar suporte para mais cidades
 
-- [ ] Concluído Total
+- [x] Concluído Total
 - [ ] Concluído Parcial
 - [ ] Não Concluído
 

@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../style';
 
 type Props = {
-  handleSearchParamsChange: Function;
+  handleSearchParamsChange: (params: string) => void;
 };
 
 const SearchBar = ({ handleSearchParamsChange }: Props) => {

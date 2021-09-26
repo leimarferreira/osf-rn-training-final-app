@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 });
 
 const MovieDetail = ({ route }: Props) => {
-  const { movie } = route.params;
+  const { movie, city } = route.params;
 
   const week = useMemo(
     () => [
@@ -140,7 +140,7 @@ const MovieDetail = ({ route }: Props) => {
           onChange={handleSegmentedControlChange}
         />
 
-        <MovieTheaterList movie={movie} date={date} />
+        <MovieTheaterList movie={movie} city={city} date={date} />
       </View>
     </View>
   );

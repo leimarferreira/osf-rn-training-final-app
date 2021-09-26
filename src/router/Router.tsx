@@ -5,16 +5,21 @@ import {
 } from '@react-navigation/native-stack';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import CitySelector from '../screens/CitySelector';
 import Home from '../screens/Home';
 import MovieDetail from '../screens/MovieDetail';
-import { Movie } from '../service';
+import { City, Movie } from '../service';
 import { colors } from '../style';
 
 const HomeStack = createNativeStackNavigator();
 
 export type RootStackParamList = {
   Home: undefined;
-  MovieDetail: { movie: Movie };
+  MovieDetail: { movie: Movie; city: City | null };
+  CitySelector: {
+    handleSelectedCityChange: (city: City) => void;
+    currentSelectedCity: City | null;
+  };
 };
 
 const homeOptions: NativeStackNavigationOptions = {
@@ -28,6 +33,12 @@ const movieDetailOptions: NativeStackNavigationOptions = {
   headerTransparent: true,
   headerShadowVisible: false,
   headerTitle: '',
+  headerTintColor: colors.white,
+};
+
+const citySelectorOptions: NativeStackNavigationOptions = {
+  headerTitle: 'Selecione uma cidade',
+  headerStyle: { backgroundColor: colors.headerBackgroundColor },
   headerTintColor: colors.white,
 };
 
@@ -53,6 +64,11 @@ export default () => (
           name="MovieDetail"
           component={MovieDetail}
           options={movieDetailOptions}
+        />
+        <HomeStack.Screen
+          name="CitySelector"
+          component={CitySelector}
+          options={citySelectorOptions}
         />
       </HomeStack.Navigator>
     </NavigationContainer>
